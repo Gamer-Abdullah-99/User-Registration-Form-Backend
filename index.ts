@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import userRouter from "./routes/user";
 
 dotenv.config();
 
@@ -14,3 +15,6 @@ app.listen(port, () => {
 //Middleware
 app.use(cors());
 app.use(express.json());
+
+app.use("/api/user", userRouter);
+

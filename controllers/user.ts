@@ -17,8 +17,7 @@ interface UserType {
 
 dotenv.config();
 
-const accessTokenValue: Secret | undefined =
-  process.env.ACCESS_TOKEN_SECRET;
+const accessTokenValue: Secret | undefined = process.env.ACCESS_TOKEN_SECRET;
 
 //@desc Register User
 //@route POST /users/register
@@ -75,7 +74,7 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
       accessTokenValue as Secret,
       { expiresIn: "15m" }
     );
-    res.status(200).json({ accessToken });
+    res.status(200).json({ accessToken, user });
   } else {
     res.status(401);
     throw new Error("Email or password is not valid");

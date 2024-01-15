@@ -2,12 +2,23 @@ import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { sign, Secret } from "jsonwebtoken";
 import User from "../models/user";
 import dotenv from "dotenv";
 
+interface UserType {
+  username: string;
+  email: string;
+  password: string;
+  createdAt: NativeDate;
+  updatedAt: NativeDate;
+  id: string;
+}
+
 dotenv.config();
 
-const accessTokenValue = process.env.ACCESS_TOKEN_SECRET;
+const accessTokenValue: Secret | undefined =
+  process.env.ACCESS_TOKEN_SECRET;
 
 //@desc Register User
 //@route POST /users/register
@@ -53,14 +64,15 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
     res.status(400);
     throw new Error("All fields are mandatory");
   }
-  const user = await User.findOne({ email });
+  const user: UserType | null = await User.findOne({ email });
+  // const comparePass =
   //compare password
-  if (user && (await bcrypt.compare(password, user.password))) {
-    const accessToken = jwt.sign(
+  if (user !== null && (await bcrypt.compare(password, user.password))) {
+    const accessToken = sign(
       {
         user: { username: user.username, email: user.email, id: user.id },
       },
-      accessTokenValue,
+      accessTokenValue as Secret,
       { expiresIn: "15m" }
     );
     res.status(200).json({ accessToken });
@@ -70,11 +82,4 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
-//@desc Current User
-//@route GET /users/current
-//@access private
-const currentUser = asyncHandler(async (req: Request, res: Response) => {
-  res.json(req.user);
-});
-
-export { registerUser, loginUser, currentUser };
+export { registerUser, loginUser };

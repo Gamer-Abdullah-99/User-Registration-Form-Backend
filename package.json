@@ -5,9 +5,9 @@
   "main": "dist/index.js",
   "module": "true",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.ts",
-    "dev": "nodemon index.ts"
+    "build": "npx tsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon src/index.ts"
   },
   "author": "SABN",
   "license": "ISC",
